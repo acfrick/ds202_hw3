@@ -1,0 +1,71 @@
+---
+title: "hw3"
+author: "Allegra Frickel"
+date: "2/13/2019"
+output: html_document
+---
+
+```{r}
+data(tips, package="reshape2")
+tips
+str(tips)
+```
+
+1. How many parties did the waiter serve?
+```{r}
+numParty <- nrow(tips)
+numParty
+```
+
+2. What are the types of variables in the data frame tips?
+```{r}
+typeof(tips)
+```
+
+3. Create a vector named day containing the day of visits in tips. The factor levels should be ordered from Thursday to Sunday.
+```{r}
+day <- c('Thur', 'Fri', 'Sat', 'Sun')
+day
+```
+
+4. Create a data frame named female5 containing the meal paid by a female payer in a party with size greater than or equal to 5. 
+```{r}
+female5 <- data.frame(tips$sex == 'Female', tips$tip >= 5)
+female5
+```
+
+5. How does the tipping amount (tip) depend on the overall bill (total_bill)?
+```{r}
+library(ggplot2)
+ggplot(data=tips, aes(x= tips$total_bill, y= tips$tip)) + geom_point() + xlab('Total Bill') + ylab('Tip')
+```
+
+This scatterplot displays a somewhat linear, positive trend, indicating that when the total bill increases, generally there is a larger tip given. There are a few anomalies in the scatterplot. For example, one outlier has a total bill of $44, but the tip was only $2.50. This could demonstrate that customer service, satisfaction, or another unknown variable was influencing this customer's tip amount. On the other side, one outlier with a total bill of nearly $7 gave a tip of just over $5. This could demonstrate that the customer had a great experience at the restaraunt.
+
+6. Introduce a variable tiprate into the data set, that incorporates the rate of tips. 
+```{r}
+tiprate <- tips$tip / tips$total_bill
+mean(tiprate)
+```
+
+7. Make a boxplot of the tip rate by time. The x-axis should be ordered by lunch and then dinner. 
+```{r}
+time1 <- tips$time
+lvl <- levels(time1)
+Revs <- factor(time1, levels = rev(lvl))
+
+ggplot(tips, aes(x=Revs, y=tiprate)) + geom_boxplot()
+```
+
+8. How does smoking behavior and gender of the person who pays impact the relationship between tip and total bill?
+```{r}
+ggplot(tips, aes(x=total_bill, y=tip, shape=smoker, color=sex)) + geom_point() + facet_wrap(~day, scales='free_x') + xlab('Total Bill') + ylab('Tip')
+```
+These scatterplots demonstrate when there are more smokers or non-smokers who dine at this restaurant on what days and what sex they are. Overall, the scatterplots display no significant indication that smoker status impacts the relationship between tip and total bill. However, there is some indication that sex impacts the tip and total bill. Across all four days, it is evident that males are tipping more with their greater total bills. Thursday, Friday and Saturday display more linear patterns of this; whereas there is more of a random relationship between total bill and tip based on the sex of who is paying the bill.
+
+9. Find a graphical summary of the relationship between day of the week and gender of the person paying the bill.3 
+```{r}
+ggplot(tips, aes(x=day, fill=sex)) + geom_bar()
+```
+
+This bar plot displays that on Thursdays and Fridays, it is about half females and half males that pay the bills. On Saturdays and Sundays, more males pay bills than females do. This make indicate a relationship between sex of the person who pays the bill and day of the week.
